@@ -1,0 +1,14 @@
+
+.display {
+	display: flex;
+	flex-direction: row;
+	margin-top: 5vh;
+}
+
+#game {
+	margin-left: 10vw;
+}
+
+#player-list {
+	margin-left: 5vw;
+}

@@ -1,16 +1,21 @@
 import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import { CMD_LOGIN, LoginMessageRequest, LoginMessageResponse, mkMessage } from 'common/messages'
 
 const BASE_URL = 'http://localhost:3000'
 
 @Injectable()
-export class IdentityService {
+export class IdentityService implements CanActivate {
 
 	private token: string = null
-	private username: string = null
+	private _username: string = null
 
-	constructor(private http: HttpClient) { }
+	get username() {
+		return this._username
+	}
+
+	constructor(private http: HttpClient, private router: Router) { }
 
 	performLogin(username: string, password: string): Promise<void> {
 		const msg = mkMessage<LoginMessageRequest>(CMD_LOGIN)
@@ -21,17 +26,24 @@ export class IdentityService {
 			.toPromise()
 			.then(resp => {
 				this.token = resp.token
-				this.username = resp.username
+				this._username = resp.username
 			})
 	}
 	
 	logout() {
 		this.token = null
-		this.username = null
+		this._username = null
 	}
 
 	isLogin() {
 		return (this.token != null)
 	}
+
+	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+		if (this.isLogin())
+			return true
+		return this.router.parseUrl('/')
+	}
+
 
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, InternalServerErrorException, Post, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Post, UnauthorizedException } from '@nestjs/common';
 
 import { CMD_LOGIN, LoginMessageRequest, LoginMessageResponse, mkMessage } from 'common/messages'
 import {AuthenticateService} from 'src/services/authenticate.service';

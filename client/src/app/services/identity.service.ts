@@ -2,7 +2,7 @@ import {HttpClient} from "@angular/common/http";
 import {Inject, Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from "@angular/router";
 import { CMD_LOGIN, LoginMessageRequest, LoginMessageResponse, mkMessage } from 'common/messages'
-import {SERVER_URL} from "../constants";
+import {GAME_SERVER} from "../constants";
 
 @Injectable()
 export class IdentityService implements CanActivate {
@@ -11,14 +11,14 @@ export class IdentityService implements CanActivate {
 	username: string = null
 
 	constructor(private http: HttpClient, private router: Router
-		 , @Inject(SERVER_URL) private readonly serverUrl: string) { }
+		 , @Inject(GAME_SERVER) private readonly serverUrl: string) { }
 
 	performLogin(username: string, password: string): Promise<void> {
 		const msg = mkMessage<LoginMessageRequest>(CMD_LOGIN)
 		msg.username = username
 		msg.password = password
 
-		return this.http.post<LoginMessageResponse>(`${this.serverUrl}/api/authenticate`, msg)
+		return this.http.post<LoginMessageResponse>(`http://${this.serverUrl}/api/authenticate`, msg)
 			.toPromise()
 			.then(resp => {
 				this.token = resp.token

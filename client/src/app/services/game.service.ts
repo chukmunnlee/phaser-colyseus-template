@@ -4,7 +4,7 @@ import {Client, Room} from "colyseus.js";
 import {Game, Scene} from "phaser";
 import {Subject} from "rxjs";
 
-import {SERVER_URL} from "../constants";
+import {GAME_SERVER } from "../constants";
 import {CreateGameOptions, RoomOptions} from "../types";
 import { CMD_CREATE_ROOM, CreateRoomRequest, CreateRoomResponse, mkMessage } from 'common/messages'
 import {IdentityService} from "./identity.service";
@@ -17,17 +17,18 @@ export class GameService {
 	client: Client;
 	room: Room
 	roomId = '';
+	debug = false
 
 	events = new Subject<any>()
 
 	constructor(private http: HttpClient, private identSvc: IdentityService
-		, @Inject(SERVER_URL) private readonly serverUrl: string) { }
+		, @Inject(GAME_SERVER) private readonly serverUrl: string) { }
 
 	createGame(opts: CreateGameOptions) {
 
 		const width = opts?.width || 700
 		const height = opts?.height || 700
-		const debug = ('debug' in opts)? opts.debug: false
+		this.debug = ('debug' in opts)? opts.debug: this.debug
 
 		if (this.game)
 			return
@@ -39,7 +40,7 @@ export class GameService {
 			physics: {
 				default: 'arcade',
 				arcade: {
-					debug
+					debug: this.debug
 				}
 			}
 		})
@@ -58,7 +59,7 @@ export class GameService {
 		data.username = opts.username
 		data.token = opts.token
 
-		return this.http.post<CreateRoomResponse>(`${this.serverUrl}/api/room`, data)
+		return this.http.post<CreateRoomResponse>(`http://${this.serverUrl}/api/room`, data)
 			.toPromise()
 			.then(result => {
 				this.roomId = result.roomId

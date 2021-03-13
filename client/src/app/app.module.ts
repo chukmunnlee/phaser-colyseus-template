@@ -10,7 +10,7 @@ import { MainComponent } from './components/main.component';
 import { IdentityService } from './services/identity.service';
 import { PlayComponent } from './components/play.component';
 import {GameService} from './services/game.service';
-import {SERVER_URL} from './constants';
+import {GAME_SERVER} from './constants';
 
 const ROUTES: Routes = [
 	{ path: '', component: MainComponent },
@@ -32,7 +32,7 @@ const ROUTES: Routes = [
 		RouterModule.forRoot(ROUTES)
   ],
   providers: [ IdentityService, GameService,
-	  { provide: SERVER_URL, useValue: 'http://localhost:3000' }
+	  { provide: GAME_SERVER, useValue: 'localhost:3000' }
   ],
   bootstrap: [AppComponent]
 })

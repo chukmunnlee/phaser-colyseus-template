@@ -1,5 +1,5 @@
 //
-export const SERVER_URL = 'server_url'
+export const GAME_SERVER = 'game_server'
 
 // Scene
 export const SCENE_PRELOAD = 'preload'

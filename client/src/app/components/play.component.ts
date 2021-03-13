@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {GameService} from '../services/game.service';
 import {IdentityService} from '../services/identity.service';
 import { PreloadScene } from '../scenes/preload.scene'
 import {StartScene} from '../scenes/start.scene';
+import {GAME_SERVER} from '../constants';
 
 @Component({
   selector: 'app-play',
@@ -11,7 +12,8 @@ import {StartScene} from '../scenes/start.scene';
 })
 export class PlayComponent implements OnInit {
 
-  constructor(private gameSvc: GameService, private identSvc: IdentityService) { }
+  constructor(private gameSvc: GameService, private identSvc: IdentityService
+  		, @Inject(GAME_SERVER) private readonly serverUrl: string) { }
 
   ngOnInit(): void {
 	  // @ts-ignore

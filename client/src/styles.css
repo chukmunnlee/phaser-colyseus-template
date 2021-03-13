@@ -2,3 +2,37 @@
 button:disabled {
 	cursor: not-allowed;
 }
+
+.form-group {
+	display: flex;
+	flex-direction: column;
+	margin-top: 1.5vh;
+}
+
+.form-group > label {
+	font-size: 1.4em;
+	font-weight: bolder;
+}
+
+.form-group > input {
+	width: 40%;
+	font-size: 1.3em;
+}
+
+.form-group > input:focus {
+	background-color: lightgrey;
+}
+
+.form-buttons {
+	display: flex;
+	flex-direction: row;
+	margin-top: 1.5vh;
+}
+.form-buttons > button {
+	font-size: 1.4em;
+	margin-right: 1.5vw;
+}
+
+.button {
+	font-size: 1.4em;
+}

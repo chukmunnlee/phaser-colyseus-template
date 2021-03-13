@@ -6,6 +6,8 @@ import * as express from 'express'
 import * as http from 'http'
 
 import { AppModule } from './app.module';
+import { MAIN_ROOM } from 'common/constants'
+
 import {Globals} from './globals';
 import {MainRoom} from './rooms/main.room';
 import {GameService} from './services/game.service';
@@ -32,11 +34,9 @@ async function bootstrap(port: number) {
 
 	gameSvc.createServer(httpServer)
 
-	ROOMS.forEach(r => {
-		console.info(`Register room ${r.name}`)
-		// @ts-ignore
-		gameSvc.defineRoom(r.name, r)
-	})
+	console.info(`Register room '${MAIN_ROOM}'`)
+	// @ts-ignore
+	gameSvc.defineRoom(MAIN_ROOM, MainRoom)
 
 	gameSvc.listen(port)
 		.then(() => {

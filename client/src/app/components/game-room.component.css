@@ -1,0 +1,13 @@
+.side-by-side {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+}
+
+.box {
+	padding: 10px;
+	border: grey 2px solid;
+	border-radius: 10px;
+	width: 40vw;
+	height: auto;
+}

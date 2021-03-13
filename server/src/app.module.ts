@@ -7,10 +7,11 @@ import { AppController } from './app.controller';
 import { AuthenticateController } from './controllers/authenticate.controller';
 import {AuthenticateService} from './services/authenticate.service';
 import {GameService} from './services/game.service';
+import {RoomController} from './controllers/room.controller';
 
 @Module({
   imports: [],
-  controllers: [AppController, AuthenticateController],
+  controllers: [AppController, AuthenticateController, RoomController ],
   providers: [ AuthenticateService, GameService ],
 })
 export class AppModule implements NestModule {

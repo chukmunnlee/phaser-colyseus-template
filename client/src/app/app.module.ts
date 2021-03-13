@@ -9,22 +9,22 @@ import { AppComponent } from './app.component';
 import { MainComponent } from './components/main.component';
 import { IdentityService } from './services/identity.service';
 import { PlayComponent } from './components/play.component';
+import { GameRoomComponent } from './components/game-room.component';
 import {GameService} from './services/game.service';
 import {GAME_SERVER} from './constants';
 
 const ROUTES: Routes = [
 	{ path: '', component: MainComponent },
 	{ path: 'login', component: MainComponent },
-	{ path: 'play', component: PlayComponent, 
-	  canActivate: [ IdentityService ] },
+	{ path: 'game', component: GameRoomComponent, canActivate: [ IdentityService ] },
+	{ path: 'play/:gameId', component: PlayComponent, canActivate: [ IdentityService ] },
 	{ path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent,
-    PlayComponent
+    MainComponent,  GameRoomComponent, PlayComponent, 
   ],
   imports: [
 		BrowserModule, HttpClientModule,

@@ -6,7 +6,7 @@ import {Subject} from "rxjs";
 
 import {GAME_SERVER } from "../constants";
 import {CreateGameOptions, RoomOptions} from "../types";
-import { CMD_CREATE_ROOM, CreateRoomRequest, CreateRoomResponse, mkMessage } from 'common/messages'
+import { CMD_CREATE_ROOM, CreateRoomRequest, CreateRoomResponse, GetRoomResponse, mkMessage } from 'common/messages'
 import {IdentityService} from "./identity.service";
 
 
@@ -53,7 +53,7 @@ export class GameService {
 		this.client = new Client(connection)
 	}
 
-	createGameRoom(opts: RoomOptions): Promise<CreateRoomResponse> {
+	createRoom(opts: RoomOptions): Promise<CreateRoomResponse> {
 		const data = mkMessage<CreateRoomRequest>(CMD_CREATE_ROOM)
 		data.roomName = opts.roomName
 		data.username = opts.username
@@ -64,6 +64,16 @@ export class GameService {
 			.then(result => {
 				this.roomId = result.roomId
 				return result
+			})
+	}
+
+	getRoom(roomId: string): Promise<boolean> {
+		return this.http.head<GetRoomResponse>(`http://${this.serverUrl}/api/room/${roomId}`)
+			.toPromise()
+			.then(() => true)
+			.catch(error => {
+				console.error('Error: ', error)
+				return false
 			})
 	}
 

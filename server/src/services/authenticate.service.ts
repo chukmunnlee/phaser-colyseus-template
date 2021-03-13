@@ -2,6 +2,7 @@ import {Injectable} from "@nestjs/common";
 
 import { v4 as uuidv4 } from 'uuid'
 import { sign, verify } from 'jsonwebtoken'
+import {UserToken} from "src/models";
 
 @Injectable()
 export class AuthenticateService {
@@ -17,11 +18,19 @@ export class AuthenticateService {
 		if (!password.startsWith(username))
 			return Promise.resolve("")
 		
-		const payload = {
+		const payload: UserToken = {
 			sub: username,
 			iss: 'game-server',
 			iat: Math.floor(Date.now() / 1000)
 		}
 		return Promise.resolve(sign(payload, this.secret))
+	}
+
+	verifyToken(token: string): UserToken {
+		try {
+			return verify(token, this.secret) as UserToken
+		} catch(e) {
+			return null
+		}
 	}
 }

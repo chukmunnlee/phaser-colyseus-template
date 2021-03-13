@@ -24,11 +24,9 @@ export class MainComponent implements OnInit {
 
 	performLogin() {
 		const values = this.loginForm.value
-		console.info('>>> values: ', values)
 		this.identSvc.performLogin(values['username'], values['password'])
 			.then(() => {
-				console.info('>>> navigating to play')
-				this.router.navigate([ '/play' ])
+				this.router.navigate([ '/game' ])
 			})
 			.catch(error => {
 				console.error('Login: ', error)

@@ -17,7 +17,7 @@ const ROUTES: Routes = [
 	{ path: '', component: MainComponent },
 	{ path: 'login', component: MainComponent },
 	{ path: 'game', component: GameRoomComponent, canActivate: [ IdentityService ] },
-	{ path: 'play/:gameId', component: PlayComponent, canActivate: [ IdentityService ] },
+	{ path: 'play/:roomId', component: PlayComponent, canActivate: [ IdentityService ] },
 	{ path: '**', redirectTo: '/', pathMatch: 'full' }
 ]
 

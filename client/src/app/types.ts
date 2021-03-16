@@ -1,7 +1,7 @@
 import {Scene} from "phaser";
 
 export interface CreateGameOptions {
-	scene: Scene[]
+	scenes: Scene[]
 	width?: number
 	height?: number
 	debug?: boolean
@@ -9,7 +9,7 @@ export interface CreateGameOptions {
 
 export interface RoomOptions {
 	username: string
-	roomName: string
 	token: string
+	roomName?: string
 	create?: boolean
 }

@@ -15,7 +15,7 @@ export class MainRoom extends Room {
 	}
 
 	onLeave(client: Client, constened: boolean) {
-		console.info('>> onLeave: ', client)
+		console.info('>> onLeave: ', client.id)
 	}
 
 	onDispose() {

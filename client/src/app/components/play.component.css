@@ -12,3 +12,17 @@
 #player-list {
 	margin-left: 5vw;
 }
+
+.center-it {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.left-0 {
+	margin-left: .5vw;
+}
+
+code {
+	color: red;
+}

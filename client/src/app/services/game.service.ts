@@ -1,12 +1,18 @@
 import {HttpClient} from "@angular/common/http";
 import {Inject, Injectable} from "@angular/core";
 import {Client, Room} from "colyseus.js";
-import {Game, Scene} from "phaser";
+import {Game } from "phaser";
 import {Subject} from "rxjs";
 
 import {GAME_SERVER } from "../constants";
 import {CreateGameOptions, RoomOptions} from "../types";
-import { CMD_CREATE_ROOM, CreateRoomRequest, CreateRoomResponse, GetRoomResponse, mkMessage } from 'common/messages'
+import { 
+	CMD_CREATE_ROOM, MESSAGE_TYPE,
+	CreateRoomRequest, CreateRoomResponse, GetRoomResponse, 
+	mkMessage, 
+	BaseMessage,
+	BaseGameMessage
+} from 'common/messages'
 import {IdentityService} from "./identity.service";
 
 
@@ -19,7 +25,7 @@ export class GameService {
 	roomId = '';
 	debug = false
 
-	events = new Subject<any>()
+	events = new Subject<BaseGameMessage>()
 
 	constructor(private http: HttpClient, private identSvc: IdentityService
 		, @Inject(GAME_SERVER) private readonly serverUrl: string) { }
@@ -35,7 +41,7 @@ export class GameService {
 
 		this.game = new Game({
 			width, height, 
-			scene: opts.scene,
+			scene: opts.scenes,
 			parent: 'game',
 			physics: {
 				default: 'arcade',
@@ -77,9 +83,12 @@ export class GameService {
 			})
 	}
 
+	joinRoomWithId(roomId: string, opts: RoomOptions): Promise<Room<unknown>> {
+		return this.client.joinById(roomId, opts)
+			.then(this.setup.bind(this))
+	}
+
 	joinRoom(opts: RoomOptions): Promise<Room<unknown>> {
-		if (this.client)
-			return
 
 		const create = ('create' in opts)? opts.create: true
 
@@ -91,9 +100,23 @@ export class GameService {
 		const p = create?  this.client.joinOrCreate(opts.roomName, joinOpts): 
 				this.client.join(opts.roomName, joinOpts)
 
-		return p.then(room => {
-			this.room = room
-			return room
+		return p.then(this.setup.bind(this))
+	}
+
+	private setup(room: Room<unknown>) {
+		this.room = room
+		this.room.onMessage(MESSAGE_TYPE, this.messageHandler.bind(this))
+		this.room.onLeave(data => {
+			console.info('>>> client left: ', data)
 		})
+		this.room.onError((code, msg) => {
+			// TODO do something here
+			console.error(`Error: ${code} - ${msg}`)
+		})
+		return room
+	}
+
+	private messageHandler(msg: BaseGameMessage) {
+		this.events.next(msg)
 	}
 }

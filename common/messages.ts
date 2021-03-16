@@ -1,3 +1,5 @@
+export const MESSAGE_TYPE = 'game-message'
+
 export const CMD_LOGIN = 'login'
 export const CMD_CREATE_ROOM = 'create-room'
 export const CMD_GET_ROOM = 'get-room'

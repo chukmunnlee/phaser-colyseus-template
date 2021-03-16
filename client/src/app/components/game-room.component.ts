@@ -28,15 +28,12 @@ export class GameRoomComponent implements OnInit {
 
 	createRoom() {
 		const opts: RoomOptions = {
-			roomName: MAIN_ROOM,
 			username: this.identSvc.username,
-			token: this.identSvc.token
+			token: this.identSvc.token,
+			roomName: MAIN_ROOM
 		}
 		this.gameSvc.createRoom(opts)
-			.then(result => {
-				console.info('>>> room: ', result)
-				this.router.navigate([ '/play', result.roomId ])
-			})
+			.then(result => this.router.navigate([ '/play', result.roomId ]))
 			.catch(error => {
 				console.error('Error: ', error)
 			})

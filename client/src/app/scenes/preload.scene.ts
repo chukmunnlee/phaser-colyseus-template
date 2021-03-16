@@ -15,6 +15,7 @@ export class PreloadScene extends Scene {
 		this.createText()
 
 		this.load.on('progress', this.onProgress.bind(this))
+
 		this.load.image(IMG_PHASER, 'assets/phaser.png')
 	}
 
@@ -23,8 +24,7 @@ export class PreloadScene extends Scene {
 		this.progressText.setText(`Progress: ${progress}%`)
 		if (progress >= 100)
 			this.time.delayedCall(1000,
-				(() => this.scene.start(SCENE_START)).bind(this)
-			)
+				(() => this.scene.start(SCENE_START)).bind(this))
 	}
 
 	createText() {

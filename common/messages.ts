@@ -4,6 +4,9 @@ export const CMD_LOGIN = 'login'
 export const CMD_CREATE_ROOM = 'create-room'
 export const CMD_GET_ROOM = 'get-room'
 
+export const CMD_PLAYER_JOINED = 'player-joined'
+export const CMD_PLAYER_LEFT = 'player-left'
+
 export interface BaseMessage {
 	command: string
 }
@@ -36,3 +39,9 @@ export const mkMessage = function<T extends BaseMessage>(command: string) {
 export interface BaseGameMessage extends BaseMessage {
 	gameId: string
 }
+
+export interface PlayerJoined extends BaseGameMessage {
+	username: string
+}
+
+export interface PlayerLeft extends PlayerJoined { }

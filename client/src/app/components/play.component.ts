@@ -59,7 +59,7 @@ export class PlayComponent implements OnInit, OnDestroy {
 	}
 
 	private messageHandler(msg: BaseGameMessage) {
+		console.info('>> game message: ', msg)
 	}
-
 
 }

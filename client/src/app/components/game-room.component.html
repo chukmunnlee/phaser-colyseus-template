@@ -8,7 +8,7 @@
 
 	<div class="box">
 		<h2>Join an Existing Room</h2>
-		<form [formGroup]="form">
+		<form [formGroup]="form" (ngSubmit)="joinRoom()">
 			<div class="form-group">
 				<label for="gameId">Game Id:</label>
 				<input id="gameId" type="text" formControlName="gameId">

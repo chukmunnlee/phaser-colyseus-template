@@ -40,6 +40,8 @@ export class GameRoomComponent implements OnInit {
 	}
 
 	joinRoom() {
+		const gameId = this.form.get('gameId').value
+		this.router.navigate([ '/play', gameId ])
 	}
 
 }

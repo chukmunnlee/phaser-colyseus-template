@@ -10,7 +10,6 @@ import {
 	CMD_CREATE_ROOM, MESSAGE_TYPE,
 	CreateRoomRequest, CreateRoomResponse, GetRoomResponse, 
 	mkMessage, 
-	BaseMessage,
 	BaseGameMessage
 } from 'common/messages'
 import {IdentityService} from "./identity.service";
@@ -85,7 +84,7 @@ export class GameService {
 
 	joinRoomWithId(roomId: string, opts: RoomOptions): Promise<Room<unknown>> {
 		return this.client.joinById(roomId, opts)
-			.then(this.setup.bind(this))
+			.then(() => this.setup.bind(this))
 	}
 
 	joinRoom(opts: RoomOptions): Promise<Room<unknown>> {

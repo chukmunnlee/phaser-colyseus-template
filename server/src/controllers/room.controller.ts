@@ -1,7 +1,7 @@
-import {Body, Controller, Get, Head, HttpCode, HttpStatus, NotFoundException, Param, Post, UnauthorizedException} from "@nestjs/common";
+import {Body, Controller, Head, HttpCode, HttpStatus, NotFoundException, Param, Post, UnauthorizedException} from "@nestjs/common";
 
 import {
-	CMD_CREATE_ROOM, CMD_GET_ROOM,
+	CMD_CREATE_ROOM_RESPONSE, CMD_GET_ROOM_RESPONSE,
 	CreateRoomRequest, CreateRoomResponse, GetRoomResponse,  
 	mkMessage
 } from "common/messages";
@@ -23,7 +23,7 @@ export class RoomController {
 		if (!jwt)
 			throw new UnauthorizedException('Not authorized to create room')
 
-		const resp = mkMessage<CreateRoomResponse>(CMD_CREATE_ROOM)
+		const resp = mkMessage<CreateRoomResponse>(CMD_CREATE_ROOM_RESPONSE)
 
 		resp.roomId = await this.gameSvc.createRoom(req.roomName)
 
@@ -36,7 +36,7 @@ export class RoomController {
 		if (!this.gameSvc.findRoom(roomId))
 			throw new NotFoundException(`Room id ${roomId} not found`)
 
-		const resp = mkMessage<GetRoomResponse>(CMD_GET_ROOM)
+		const resp = mkMessage<GetRoomResponse>(CMD_GET_ROOM_RESPONSE)
 		resp.roomId = roomId
 		return Promise.resolve(resp)
 	}

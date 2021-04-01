@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Title} from '@angular/platform-browser';
 import {Router} from '@angular/router';
 
 import { MAIN_ROOM } from 'common/constants'
@@ -17,11 +18,12 @@ export class GameRoomComponent implements OnInit {
 
 	form: FormGroup
 
-	constructor(private fb: FormBuilder, private router: Router
+	constructor(private fb: FormBuilder, private router: Router, private title: Title
 			, private identSvc: IdentityService, private gameSvc: GameService) { }
 	
 	ngOnInit(): void {
-	  this.form = this.fb.group({
+		this.title.setTitle(`Client: ${this.identSvc.username}`)
+		this.form = this.fb.group({
 		  gameId: this.fb.control('', [ Validators.required, Validators.minLength(5) ])
 		})
 	}

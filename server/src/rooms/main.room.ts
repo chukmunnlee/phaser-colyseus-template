@@ -1,14 +1,18 @@
 import {Client, Room} from "colyseus";
 import {BaseGameMessage, MESSAGE_TYPE, mkMessage, 
-	PlayerJoined, PlayerLeft,
-	CMD_PLAYER_JOINED, CMD_PLAYER_LEFT
+	PlayerJoined, PlayerLeft, GetPlayersRequest, GetPlayersResponse,
+	CMD_PLAYER_JOINED, CMD_PLAYER_LEFT, 
+	CMD_GET_PLAYERS_REQUEST, CMD_GET_PLAYERS_RESPONSE,
 } from "common/messages";
 
 import * as http from 'http'
+import { v4 as uuid4 } from 'uuid'
 
 export class MainRoom extends Room {
 
 	roomName = 'MainRoon'
+
+	players: string[] = []
 
 	onAuth(client: Client, options: any, req: http.IncomingMessage) {
 		console.info('>> onAuth: ', options)
@@ -24,8 +28,10 @@ export class MainRoom extends Room {
 	}
 
 	onJoin(client: Client, options: any, auth: any) {
-		const username = options['username'] || 'anon'
+		const username = options['username'] || uuid4().toString().substring(0, 8)
 		client.userData = { username }
+
+		this.players.push(username)
 
 		const msg = mkMessage<PlayerJoined>(CMD_PLAYER_JOINED)
 		msg.gameId = this.roomId
@@ -39,6 +45,10 @@ export class MainRoom extends Room {
 		msg.gameId = this.roomId
 		msg.username = client.userData['username']
 
+		const idx = this.players.findIndex(v => v == msg.username)
+		if (idx >= 0)
+			this.players.splice(idx, 1)
+
 		this.broadcast(MESSAGE_TYPE, msg, { except: client })
 	}
 
@@ -48,6 +58,17 @@ export class MainRoom extends Room {
 
 	messageHandler(client: Client, msg: BaseGameMessage) {
 		switch (msg.command) {
+			case CMD_GET_PLAYERS_REQUEST:
+				const gpReq = msg as GetPlayersRequest
+				const gpResp = mkMessage<GetPlayersResponse>(CMD_GET_PLAYERS_RESPONSE)
+				gpResp.gameId = this.roomId
+				let pl = this.players
+				if (!gpReq.includeSelf)
+					pl = pl.filter(v => v != client.userData['username'])
+				gpResp.players = pl
+				client.send(MESSAGE_TYPE, gpResp)
+				break
+
 			default:
 				console.error('Unknown message: ', msg)
 		}

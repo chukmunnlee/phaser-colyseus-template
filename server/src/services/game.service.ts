@@ -1,6 +1,5 @@
 import {Injectable, OnApplicationShutdown} from "@nestjs/common";
 import {Server, Room, matchMaker } from "colyseus";
-import {RoomListingData} from "colyseus/lib/matchmaker/drivers/Driver";
 import * as http from 'http'
 
 type Type<T> = new (...args: any[]) => T

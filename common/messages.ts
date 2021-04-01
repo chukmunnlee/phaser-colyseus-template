@@ -1,11 +1,16 @@
 export const MESSAGE_TYPE = 'game-message'
 
 export const CMD_LOGIN = 'login'
-export const CMD_CREATE_ROOM = 'create-room'
-export const CMD_GET_ROOM = 'get-room'
+export const CMD_CREATE_ROOM_REQUEST = 'create-room-req'
+export const CMD_CREATE_ROOM_RESPONSE = 'create-room-resp'
+export const CMD_GET_ROOM_REQUEST = 'get-room-req'
+export const CMD_GET_ROOM_RESPONSE = 'get-room-resp'
 
 export const CMD_PLAYER_JOINED = 'player-joined'
 export const CMD_PLAYER_LEFT = 'player-left'
+export const CMD_GET_PLAYERS_REQUEST = 'get-players-req'
+export const CMD_GET_PLAYERS_RESPONSE = 'get-players-resp'
+export const CMD_ROOM_ERROR = 'room-error'
 
 export interface BaseMessage {
 	command: string
@@ -45,3 +50,15 @@ export interface PlayerJoined extends BaseGameMessage {
 }
 
 export interface PlayerLeft extends PlayerJoined { }
+
+export interface GetPlayersRequest extends BaseGameMessage {
+	includeSelf: boolean
+}
+
+export interface GetPlayersResponse extends BaseGameMessage {
+	players: string[]
+}
+
+export interface RoomError extends BaseGameMessage { 
+	errorCode: number
+}

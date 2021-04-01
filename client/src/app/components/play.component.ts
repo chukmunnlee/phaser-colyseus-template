@@ -3,10 +3,10 @@ import {GameService} from '../services/game.service';
 import {IdentityService} from '../services/identity.service';
 import { PreloadScene } from '../scenes/preload.scene'
 import {StartScene} from '../scenes/start.scene';
-import {GAME_SERVER} from '../constants';
-import {ActivatedRoute} from '@angular/router';
+import {CONNECTED, DISCONNECTED, WSS_ENDPOINT} from '../constants';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CreateGameOptions, RoomOptions} from '../types';
-import {BaseGameMessage} from 'common/messages';
+import {BaseGameMessage, CMD_GET_PLAYERS_REQUEST, CMD_GET_PLAYERS_RESPONSE, CMD_PLAYER_JOINED, CMD_PLAYER_LEFT, CMD_ROOM_ERROR, GetPlayersRequest, GetPlayersResponse, mkMessage, PlayerJoined, PlayerLeft} from 'common/messages';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -17,13 +17,15 @@ import {Subscription} from 'rxjs';
 export class PlayComponent implements OnInit, OnDestroy {
 
 	roomId = ''
-	status = 'assets/icons/off.png'
+	status = DISCONNECTED
 
 	gameSvc$: Subscription
 
-  constructor(private activatedRoute: ActivatedRoute, 
+	players: string[] = []
+
+  constructor(private activatedRoute: ActivatedRoute, private router: Router,
 		  private gameSvc: GameService, private identSvc: IdentityService
-  		, @Inject(GAME_SERVER) private readonly serverUrl: string) { }
+  		, @Inject(WSS_ENDPOINT) private readonly wssEndpoint: string) { }
 
   ngOnInit(): void {
 	  this.roomId = this.activatedRoute.snapshot.params['roomId']
@@ -38,7 +40,8 @@ export class PlayComponent implements OnInit, OnDestroy {
 	  this.gameSvc.createGame(opt)
 
 	  // connect to the server
-	  this.gameSvc.connect(`ws://${this.serverUrl}`)
+	  console.info('>>> wss endpoint: ', this.wssEndpoint)
+	  this.gameSvc.connect(`${this.wssEndpoint}`)
 
 	  // this join room
 	  const opts: RoomOptions = {
@@ -46,8 +49,12 @@ export class PlayComponent implements OnInit, OnDestroy {
 		  token: this.identSvc.token,
 	  }
 	  this.gameSvc.joinRoomWithId(this.roomId, opts)
-	  	.then(room => {
-			this.status = 'assets/icons/on.png'
+	  	.then(() => {
+			this.status = CONNECTED
+			const gpReq = mkMessage<GetPlayersRequest>(CMD_GET_PLAYERS_REQUEST)
+			gpReq.gameId = this.gameSvc.roomId
+			gpReq.includeSelf = false
+			this.gameSvc.sendMessage(gpReq)
 		})
 	  .catch(error => {
 		  console.error('Error: ', error)
@@ -58,8 +65,40 @@ export class PlayComponent implements OnInit, OnDestroy {
 		this.gameSvc$.unsubscribe()
 	}
 
+	leaveGame() {
+		this.gameSvc.disconnect()
+		this.identSvc.logout()
+
+		this.router.navigate([ '/' ])
+	}
+
 	private messageHandler(msg: BaseGameMessage) {
-		console.info('>> game message: ', msg)
+		switch (msg.command) {
+			case CMD_PLAYER_JOINED:
+				const pj = msg as PlayerJoined
+				this.players.push(pj.username)
+				break
+
+			case CMD_PLAYER_LEFT:
+				const pl = msg as PlayerLeft
+				const idx = this.players.findIndex(v => v == pl.username)
+				if (idx >= 0)
+					this.players.splice(idx, 1)
+				break
+
+			case CMD_GET_PLAYERS_RESPONSE:
+				const gpResp = msg as GetPlayersResponse
+				this.players = gpResp.players
+				break
+
+			case CMD_ROOM_ERROR:
+				this.status = DISCONNECTED
+				this.players = []
+				break
+
+			// ignore any message we cannot handle
+			default:
+		}
 	}
 
 }

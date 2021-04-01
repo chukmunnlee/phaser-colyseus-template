@@ -9,6 +9,14 @@
 			<img [src]="status" class="left-0">
 		</h3>
 		<h3>List of Players</h3>
+		<div *ngFor="let p of players" class="player">
+			{{ p }}
+		</div>
+		<div>
+			<button type="button" (click)="leaveGame()">
+				Leave Game
+			</button>
+		</div>
 	</div>
 
 </div>

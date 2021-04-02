@@ -40,7 +40,6 @@ export class PlayComponent implements OnInit, OnDestroy {
 	  this.gameSvc.createGame(opt)
 
 	  // connect to the server
-	  console.info('>>> wss endpoint: ', this.wssEndpoint)
 	  this.gameSvc.connect(`${this.wssEndpoint}`)
 
 	  // this join room
@@ -49,13 +48,7 @@ export class PlayComponent implements OnInit, OnDestroy {
 		  token: this.identSvc.token,
 	  }
 	  this.gameSvc.joinRoomWithId(this.roomId, opts)
-	  	.then(() => {
-			this.status = CONNECTED
-			const gpReq = mkMessage<GetPlayersRequest>(CMD_GET_PLAYERS_REQUEST)
-			gpReq.gameId = this.gameSvc.roomId
-			gpReq.includeSelf = false
-			this.gameSvc.sendMessage(gpReq)
-		})
+	  	.then(() => this.status = CONNECTED)
 	  .catch(error => {
 		  console.error('Error: ', error)
 	  })

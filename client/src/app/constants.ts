@@ -8,7 +8,10 @@ export const SCENE_START = 'start'
 
 // Image key
 export const IMG_PHASER = 'phaser'
+export const IMG_NUMBER = 'number_'
 
 // icons
 export const CONNECTED = 'assets/icons/on.png'
 export const DISCONNECTED = 'assets/icons/off.png'
+
+export const NUMBER = 'assets/images/numbers/'

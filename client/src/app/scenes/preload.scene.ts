@@ -1,6 +1,7 @@
 import {GameObjects, Scene} from "phaser";
-import {IMG_PHASER, SCENE_PRELOAD, SCENE_START} from "../constants";
-import {gameHeight, gameWidth} from "../utils/helpers";
+import {IMG_PHASER, IMG_NUMBER, NUMBER,
+	SCENE_PRELOAD, SCENE_START} from "../constants";
+import {gameHeight, gameWidth, scaleToGameHeight} from "../utils/helpers";
 
 export class PreloadScene extends Scene {
 
@@ -17,6 +18,16 @@ export class PreloadScene extends Scene {
 		this.load.on('progress', this.onProgress.bind(this))
 
 		this.load.image(IMG_PHASER, 'assets/phaser.png')
+
+		for (let i = 0; i < 5; i++) 
+			this.load.image(`${IMG_NUMBER}${i}`, `${NUMBER}/number${i}.jpg`)
+	}
+
+	create() {
+		const centX = gameWidth(this.game) / 2
+		const centY = gameHeight(this.game) / 2
+		const img = this.add.image(centX, centY, IMG_PHASER)
+		scaleToGameHeight(img, this.game, .7)
 	}
 
 	onProgress(value: number) {
